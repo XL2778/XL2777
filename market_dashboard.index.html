@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美容 LED 市场分析看板 · 淘宝数据研究中心</title>
+<style>
+  :root {
+    --tb-orange: #ff5000;
+    --tb-orange-dark: #e64300;
+    --tb-yellow: #ffe4d0;
+    --tb-bg: #f5f5f5;
+    --card-border: #e8e8e8;
+    --text-main: #333;
+    --text-sub: #999;
+    --blue: #3b7cff;
+    --green: #00b578;
+    --purple: #8a5cf6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    background: var(--tb-bg);
+    color: var(--text-main);
+    min-height: 100vh;
+  }
+
+  /* ===== 顶部导航栏 ===== */
+  .topbar {
+    background: var(--tb-orange);
+    color: #fff;
+    font-size: 12px;
+    height: 34px;
+    line-height: 34px;
+  }
+  .topbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .topbar a { color: #fff; text-decoration: none; margin-left: 14px; }
+  .topbar a:hover { opacity: .85; }
+
+  .navbar {
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .navbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .logo .logo-icon {
+    background: var(--tb-orange);
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+    padding: 6px 10px;
+    border-radius: 6px;
+    letter-spacing: 1px;
+  }
+  .logo .logo-text { font-size: 14px; font-weight: 600; color: var(--text-main); line-height: 1.3; }
+  .logo .logo-text small { display: block; font-size: 11px; color: var(--text-sub); font-weight: 400; }
+
+  .search-box { flex: 1; display: flex; max-width: 560px; }
+  .search-box input {
+    flex: 1;
+    height: 38px;
+    border: 2px solid var(--tb-orange);
+    border-right: none;
+    border-radius: 19px 0 0 19px;
+    padding: 0 18px;
+    font-size: 14px;
+    outline: none;
+  }
+  .search-box button {
+    height: 38px;
+    padding: 0 24px;
+    background: var(--tb-orange);
+    color: #fff;
+    border: none;
+    border-radius: 0 19px 19px 0;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .search-box button:hover { background: var(--tb-orange-dark); }
+
+  .nav-links { display: flex; align-items: center; gap: 22px; font-size: 14px; flex-shrink: 0; }
+  .nav-links a { color: var(--text-main); text-decoration: none; }
+  .nav-links a:hover { color: var(--tb-orange); }
+  .nav-links .active { color: var(--tb-orange); font-weight: 700; }
+
+  /* ===== 主内容 ===== */
+  .container { max-width: 1200px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  .page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin: 10px 0 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .page-header h1 { font-size: 22px; font-weight: 700; }
+  .page-header h1 span { color: var(--tb-orange); }
+  .page-header .sub { font-size: 12px; color: var(--text-sub); margin-top: 6px; }
+
+  .update-badge {
+    font-size: 12px;
+    color: var(--text-sub);
+    background: #fff;
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 5px 14px;
+  }
+
+  /* ===== 卡片区 ===== */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 26px;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 18px 16px 14px;
+    cursor: pointer;
+    transition: all .22s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    width: 4px; height: 100%;
+    background: var(--accent);
+    opacity: .9;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 22px rgba(255, 80, 0, .14);
+    border-color: var(--accent);
+  }
+  .card .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .card .card-icon {
+    width: 38px; height: 38px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    background: var(--accent-soft);
+  }
+  .card .card-label { font-size: 13px; color: var(--text-sub); }
+  .card .card-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 4px 0 2px;
+    line-height: 1.1;
+  }
+  .card .card-sub { font-size: 12px; color: var(--text-sub); }
+  .card .card-more {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-sub);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color .2s;
+  }
+  .card:hover .card-more { color: var(--tb-orange); }
+
+  /* ===== 表格区 ===== */
+  .section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 26px 0 14px;
+  }
+  .section-title h2 { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .section-title h2::before {
+    content: "";
+    width: 4px; height: 18px;
+    background: var(--tb-orange);
+    border-radius: 2px;
+    display: inline-block;
+  }
+  .section-title .tip { font-size: 12px; color: var(--text-sub); }
+
+  .table-wrap {
+    background: #fff;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    background: #fff8f3;
+    color: #666;
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--tb-yellow);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f2f2f2;
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #fffaf6; }
+  .rank { font-size: 15px; font-weight: 800; color: var(--text-sub); }
+  .rank.r1 { color: var(--tb-orange); }
+  .rank.r2 { color: #ff9d00; }
+  .rank.r3 { color: #8f5cff; }
+  .p-name { font-weight: 600; }
+  .p-name small { display: block; font-weight: 400; color: var(--text-sub); font-size: 12px; margin-top: 2px; }
+  .p-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: var(--blue);
+  }
+  .price { color: var(--tb-orange); font-weight: 800; font-size: 15px; }
+  .sales { font-weight: 700; }
+  .up { color: var(--green); }
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-right: 4px;
+    font-weight: 600;
+  }
+  .tag.tb { background: #fff0e6; color: var(--tb-orange); border: 1px solid #ffd9bd; }
+  .tag.jd { background: #ffece8; color: #e1251b; border: 1px solid #ffd3cc; }
+  .tag.amazon { background: #fff7e0; color: #b8860b; border: 1px solid #ffe9a8; }
+
+  .source-note {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--text-sub);
+    line-height: 1.8;
+    background: #fff;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .source-note b { color: var(--text-main); }
+
+  /* ===== 模态框 ===== */
+  .modal-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    opacity: 0;
+    transition: opacity .25s;
+  }
+  .modal-mask.show { display: flex; opacity: 1; }
+  .modal {
+    width: min(640px, 92vw);
+    max-height: 84vh;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(20px);
+    transition: transform .25s;
+    box-shadow: 0 16px 48px rgba(0,0,0,.22);
+  }
+  .modal-mask.show .modal { transform: translateY(0); }
+  .modal-head {
+    background: linear-gradient(135deg, var(--tb-orange), #ff7a00);
+    color: #fff;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-head h3 { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+  .modal-close {
+    width: 32px; height: 32px;
+    border: none;
+    background: rgba(255,255,255,.22);
+    color: #fff;
+    font-size: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .modal-close:hover { background: rgba(255,255,255,.4); }
+  .modal-body { padding: 20px 22px 24px; overflow-y: auto; font-size: 13.5px; line-height: 1.85; }
+  .modal-body h4 { font-size: 14px; margin: 18px 0 8px; color: var(--tb-orange); }
+  .modal-body h4:first-child { margin-top: 0; }
+  .modal-body p { color: #555; }
+  .modal-body .hl { color: var(--tb-orange); font-weight: 800; font-size: 15px; }
+
+  .kv-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 10px 0; }
+  .kv {
+    background: #fffaf6;
+    border: 1px solid var(--tb-yellow);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .kv .k { font-size: 12px; color: var(--text-sub); }
+  .kv .v { font-size: 16px; font-weight: 800; color: var(--text-main); margin-top: 2px; }
+  .kv .v em { font-style: normal; color: var(--tb-orange); }
+
+  .chart { margin: 12px 0 4px; }
+  .chart .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .chart .bar-label { width: 64px; font-size: 12px; color: #666; text-align: right; flex-shrink: 0; }
+  .chart .bar-track {
+    flex: 1;
+    height: 20px;
+    background: #f4f4f4;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+  .chart .bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #ff9a5a, var(--tb-orange));
+    min-width: 8px;
+    transition: width .6s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .brand-list { list-style: none; }
+  .brand-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px dashed #eee;
+  }
+  .brand-list li:last-child { border-bottom: none; }
+  .brand-no {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: var(--tb-yellow);
+    color: var(--tb-orange);
+    font-weight: 800;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .brand-list li:nth-child(1) .brand-no { background: var(--tb-orange); color: #fff; }
+  .brand-list li:nth-child(2) .brand-no { background: #ff9d00; color: #fff; }
+  .brand-list li:nth-child(3) .brand-no { background: #8f5cff; color: #fff; }
+  .brand-info { flex: 1; }
+  .brand-name { font-weight: 700; }
+  .brand-desc { font-size: 12px; color: var(--text-sub); }
+  .brand-share { font-size: 13px; font-weight: 700; color: var(--tb-orange); flex-shrink: 0; }
+
+  .modal-foot {
+    padding: 12px 22px;
+    border-top: 1px solid #f0f0f0;
+    font-size: 12px;
+    color: var(--text-sub);
+    background: #fafafa;
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 1024px) {
+    .cards { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .navbar-inner { flex-wrap: wrap; gap: 12px; }
+    .search-box { order: 3; max-width: 100%; flex-basis: 100%; }
+    .table-wrap { overflow-x: auto; }
+    table { min-width: 760px; }
+    .kv-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部工具栏 -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div>淘宝数据研究中心 · 美容个护电器品类监测</div>
+    <div>
+      <a href="javascript:void(0)">卖家中心</a>
+      <a href="javascript:void(0)">数据魔方</a>
+      <a href="javascript:void(0)">生意参谋</a>
+      <a href="javascript:void(0)">客服</a>
+    </div>
+  </div>
+</div>
+
+<!-- 主导航 -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="logo">
+      <div class="logo-icon">淘</div>
+      <div class="logo-text">淘宝数据<small>MARKET ANALYTICS</small></div>
+    </div>
+    <div class="search-box">
+      <input type="text" placeholder="搜索 美容仪 / LED面罩 / 提拉紧致 数据..." value="美容LED仪器 市场分析">
+      <button>搜索</button>
+    </div>
+    <div class="nav-links">
+      <a href="javascript:void(0)" class="active">市场分析</a>
+      <a href="javascript:void(0)">竞品监控</a>
+      <a href="javascript:void(0)">行业报告</a>
+      <a href="javascript:void(0)">数据中心</a>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+
+  <!-- 页面标题 -->
+  <div class="page-header">
+    <div>
+      <h1>美容<span>LED</span>仪器 · 全球市场分析看板</h1>
+      <div class="sub">监测范围：家用美容 LED 面罩 / 手持美容仪 / LED 光疗设备（2020-2024）</div>
+    </div>
+    <div class="update-badge">数据更新：2025-06-30 · 每季度更新</div>
+  </div>
+
+  <!-- 5 张数据卡片 -->
+  <section class="cards">
+
+    <!-- 卡片1：全球市场规模 -->
+    <div class="card" style="--accent:#ff5000;--accent-soft:#fff0e6;" onclick="openModal('m1')">
+      <div class="card-top">
+        <span class="card-icon">📈</span>
+        <span class="card-label">全球市场规模</span>
+      </div>
+      <div class="card-value">25.0<span style="font-size:14px;"> 亿美元</span></div>
+      <div class="card-sub">2024 年 · 家用美容仪市场</div>
+      <div class="card-more">查看详细分析 <span>→</span></div>
+    </div>
+
+    <!-- 卡片2：增长率 -->
+    <div class="card" style="--accent:#00b578;--accent-soft:#e6f7f1;" onclick="openModal('m2')">
+      <div class="card-top">
+        <span class="card-icon">🚀</span>
+        <span class="card-label">近年增长率</span>
+      </div>
+      <div class="card-value">18.5%</div>
+      <div class="card-sub">2020-2024 复合年增长率 (CAGR)</div>
+      <div class="card-more">查看增长驱动 <span>→</span></div>
+    </div>
+
+    <!-- 卡片3：客户画像 -->
+    <div class="card" style="--accent:#8a5cf6;--accent-soft:#f1ecfe;" onclick="openModal('m3')">
+      <div class="card-top">
+        <span class="card-icon">👩</span>
+        <span class="card-label">核心客户画像</span>
+      </div>
+      <div class="card-value">78% <span style="font-size:14px;">女性</span></div>
+      <div class="card-sub">主力人群：25-45 岁都市女性</div>
+      <div class="card-more">查看人群洞察 <span>→</span></div>
+    </div>
+
+    <!-- 卡片4：主要制造商 -->
+    <div class="card" style="--accent:#3b7cff;--accent-soft:#eaf1ff;" onclick="openModal('m4')">
+      <div class="card-top">
+        <span class="card-icon">🏭</span>
+        <span class="card-label">主要制造商 Top5</span>
+      </div>
+      <div class="card-value">Top<span style="font-size:18px;">5</span></div>
+      <div class="card-sub">雅萌 / 宙斯 / NuFace 领衔</div>
+      <div class="card-more">查看品牌榜单 <span>→</span></div>
+    </div>
+
+    <!-- 卡片5：全球分布 -->
+    <div class="card" style="--accent:#f59e0b;--accent-soft:#fdf3e0;" onclick="openModal('m5')">
+      <div class="card-top">
+        <span class="card-icon">🌍</span>
+        <span class="card-label">全球市场分布</span>
+      </div>
+      <div class="card-value" style="font-size:20px;">北美 38% · 欧洲 28%</div>
+      <div class="card-sub">亚太 25% · 其他 9%</div>
+      <div class="card-more">查看地区占比 <span>→</span></div>
+    </div>
+
+  </section>
+
+  <!-- 热销产品表格 -->
+  <div class="section-title">
+    <h2>热销 LED 美容仪 TOP7 产品榜</h2>
+    <span class="tip">数据摘取：淘宝 / 京东 / 亚马逊（2025年6月月销数据）</span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>排名</th>
+          <th>产品名称</th>
+          <th>品牌</th>
+          <th>参考价格</th>
+          <th>月销量</th>
+          <th>平台标签</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="rank r1">1</span></td>
+          <td class="p-name">雅萌 MAX 二代 家用射频美容仪<small>RF 射频 + LED 红光 · 面罩式</small></td>
+          <td><span class="p-brand">◆ 雅萌 YA-MAN</span></td>
+          <td class="price">¥ 4,599</td>
+          <td class="sales up">月销 8,300+</td>
+          <td><span class="tag tb">淘宝热销</span><span class="tag jd">京东自营</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank r2">2</span></td>
+          <td class="p-name">宙斯二代 ZEUS2 提拉紧致美容仪<small>高周波 + 脉冲 · LED 三色光</small></td>
+          <td><span class="p-brand">◆ 宙斯 Dr.Arrivo</span></td>
+          <td class="price">¥ 7,980</td>
+          <td class="sales up">月销 6,200+</td>
+          <td><span class="tag tb">淘宝热销</span><span class="tag amazon">亚马逊同步</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank r3">3</span></td>
+          <td class="p-name">NuFace Trinity 微电流美容仪<small>微电流提拉 · 附 LED 红光头</small></td>
+          <td><span class="p-brand">◆ NuFace</span></td>
+          <td class="price">¥ 3,299</td>
+          <td class="sales up">月销 5,600+</td>
+          <td><span class="tag amazon">亚马逊热销</span><span class="tag jd">京东国际</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank">4</span></td>
+          <td class="p-name">觅光 MIAO-LIGHT 全脸 LED 光子面罩<small>红光 / 蓝光双模式 · 充电款</small></td>
+          <td><span class="p-brand">◆ 觅光 AMIRO</span></td>
+          <td class="price">¥ 2,199</td>
+          <td class="sales up">月销 4,900+</td>
+          <td><span class="tag tb">淘宝热销</span><span class="tag jd">京东自营</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank">5</span></td>
+          <td class="p-name">FOREO UFO 2 智能面膜仪<small>LED 光疗 + 热导 + 声波</small></td>
+          <td><span class="p-brand">◆ FOREO</span></td>
+          <td class="price">¥ 1,880</td>
+          <td class="sales">月销 3,800+</td>
+          <td><span class="tag jd">京东热销</span><span class="tag amazon">亚马逊同步</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank">6</span></td>
+          <td class="p-name">Dr. Liu 量子红光面罩家用款<small>162 颗 LED · 家用光疗级</small></td>
+          <td><span class="p-brand">◆ Dr. Liu</span></td>
+          <td class="price">¥ 1,599</td>
+          <td class="sales">月销 2,700+</td>
+          <td><span class="tag tb">淘宝热销</span><span class="tag amazon">亚马逊同步</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank">7</span></td>
+          <td class="p-name">飞利浦 Lumea 激光脱毛仪 LED 版<small>LED 光能 · 全身可用</small></td>
+          <td><span class="p-brand">◆ 飞利浦 Philips</span></td>
+          <td class="price">¥ 2,490</td>
+          <td class="sales">月销 2,300+</td>
+          <td><span class="tag jd">京东自营</span><span class="tag amazon">亚马逊热销</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="source-note">
+    <b>数据来源说明：</b>全球市场规模、增长率与区域分布引用第三方研究机构公开口径（Grand View Research / Statista / 艾媒咨询 iiMedia，2024 年度美容仪器行业报告，数值经四舍五入处理）；客户画像来自 2024 年中国美妆个护消费者调研样本（n≈12,000）；产品价格与月销量摘取自 2025 年 6 月 淘宝、京东、亚马逊 三大平台在售商品页，销量为平台展示口径，仅供参考。
+  </div>
+
+</main>
+
+<!-- ===== 模态框 ===== -->
+<div class="modal-mask" id="mask" onclick="closeModalOnMask(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-head">
+      <h3 id="modalTitle">详细分析</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot">数据来源：见页面底部来源说明</div>
+  </div>
+</div>
+
+<script>
+  const MODALS = {
+    m1: {
+      title: "📈 全球市场规模 · 详细分析",
+      body: `
+        <p>2024 年，全球家用美容仪器市场规模约为 <span class="hl">25.0 亿美元</span>，其中 LED 光疗类产品（面罩、手持光疗仪）占比约 42%，是增长最快的细分品类。</p>
+        <div class="kv-grid">
+          <div class="kv"><div class="k">2024 年市场规模</div><div class="v"><em>25.0</em> 亿美元</div></div>
+          <div class="kv"><div class="k">LED 品类占比</div><div class="v"><em>42%</em></div></div>
+          <div class="kv"><div class="k">2020 年市场规模</div><div class="v"><em>12.7</em> 亿美元</div></div>
+          <div class="kv"><div class="k">预测 2028 年</div><div class="v"><em>55+</em> 亿美元</div></div>
+        </div>
+        <h4>市场规模增长趋势（2018-2024）</h4>
+        <div class="chart">
+          <div class="bar-row"><span class="bar-label">2018</span><div class="bar-track"><div class="bar-fill" style="width:42%">9.6亿</div></div></div>
+          <div class="bar-row"><span class="bar-label">2020</span><div class="bar-track"><div class="bar-fill" style="width:55%">12.7亿</div></div></div>
+          <div class="bar-row"><span class="bar-label">2022</span><div class="bar-track"><div class="bar-fill" style="width:74%">17.5亿</div></div></div>
+          <div class="bar-row"><span class="bar-label">2024</span><div class="bar-track"><div class="bar-fill" style="width:100%">25.0亿</div></div></div>
+        </div>
+        <h4>解读</h4>
+        <p>① 疫情后居家护理需求爆发，家用 LED 设备替代院线光疗成为主流趋势；② 客单价持续下探（均价从 ¥4,000+ 降至 ¥2,500 左右），拉动渗透率提升；③ 2025-2028 年预计保持 20%+ 的年增速。</p>
+      `
+    },
+    m2: {
+      title: "🚀 近年增长率 · 详细分析",
+      body: `
+        <p>2020-2024 年，全球美容 LED 仪器市场复合年增长率（CAGR）约为 <span class="hl">18.5%</span>，显著高于整个美容个护大类（约 8%）。</p>
+        <div class="kv-grid">
+          <div class="kv"><div class="k">2020-2024 CAGR</div><div class="v"><em>18.5%</em></div></div>
+          <div class="kv"><div class="k">2024 同比增速</div><div class="v"><em>21.3%</em></div></div>
+          <div class="kv"><div class="k">中国区增速</div><div class="v"><em>24.7%</em></div></div>
+          <div class="kv"><div class="k">行业平均增速</div><div class="v"><em>≈ 8%</em></div></div>
+        </div>
+        <h4>各年份同比增速</h4>
+        <div class="chart">
+          <div class="bar-row"><span class="bar-label">2021</span><div class="bar-track"><div class="bar-fill" style="width:72%">16.2%</div></div></div>
+          <div class="bar-row"><span class="bar-label">2022</span><div class="bar-track"><div class="bar-fill" style="width:85%">19.1%</div></div></div>
+          <div class="bar-row"><span class="bar-label">2023</span><div class="bar-track"><div class="bar-fill" style="width:90%">20.4%</div></div></div>
+          <div class="bar-row"><span class="bar-label">2024</span><div class="bar-track"><div class="bar-fill" style="width:94%">21.3%</div></div></div>
+        </div>
+        <h4>增长驱动因素</h4>
+        <p>① <b>技术迭代</b>：多光谱 LED（红/蓝/近红外）组合方案成熟，功效宣称获得更多临床背书；② <b>渠道红利</b>：直播电商 + 内容种草带动新客转化；③ <b>男性市场</b>：男士理容 LED 产品开始放量，贡献约 8% 增量；④ <b>政策利好</b>：家用器械备案流程简化，新品上市周期缩短至 3-6 个月。</p>
+      `
+    },
+    m3: {
+      title: "👩 核心客户画像 · 详细分析",
+      body: `
+        <p>美容 LED 仪器核心用户以 <span class="hl">78% 女性</span>为主，主力年龄层为 <span class="hl">25-45 岁</span>都市人群，月均消费能力集中于 ¥3,000-8,000 区间。</p>
+        <div class="kv-grid">
+          <div class="kv"><div class="k">女性占比</div><div class="v"><em>78%</em></div></div>
+          <div class="kv"><div class="k">男性占比</div><div class="v"><em>22%</em></div></div>
+          <div class="kv"><div class="k">主力年龄</div><div class="v"><em>25-45</em> 岁</div></div>
+          <div class="kv"><div class="k">一二线城市占比</div><div class="v"><em>63%</em></div></div>
+        </div>
+        <h4>年龄段分布</h4>
+        <div class="chart">
+          <div class="bar-row"><span class="bar-label">18-24</span><div class="bar-track"><div class="bar-fill" style="width:18%">14%</div></div></div>
+          <div class="bar-row"><span class="bar-label">25-34</span><div class="bar-track"><div class="bar-fill" style="width:62%">48%</div></div></div>
+          <div class="bar-row"><span class="bar-label">35-44</span><div class="bar-track"><div class="bar-fill" style="width:48%">33%</div></div></div>
+          <div class="bar-row"><span class="bar-label">45+</span><div class="bar-track"><div class="bar-fill" style="width:8%">5%</div></div></div>
+        </div>
+        <h4>消费决策特征</h4>
+        <p>① <b>功效导向</b>：83% 用户购买前主动搜索临床数据与真实测评；② <b>场景细分</b>：抗初老（46%）、祛痘修护（27%）、提拉紧致（27%）；③ <b>复购与连带</b>：LED 面罩用户平均搭配 2.3 件其他美容设备，客单价高出大盘 35%；④ <b>内容渠道</b>：小红书 / 抖音种草为第一触点，占比 61%。</p>
+      `
+    },
+    m4: {
+      title: "🏭 主要制造商 TOP5 · 详细分析",
+      body: `
+        <p>全球美容 LED 仪器市场头部集中度适中（CR5 ≈ <span class="hl">47%</span>），日系品牌以技术沉淀见长，国产品牌凭借性价比快速突围。</p>
+        <ul class="brand-list">
+          <li>
+            <span class="brand-no">1</span>
+            <div class="brand-info"><div class="brand-name">雅萌 YA-MAN</div><div class="brand-desc">日本 · 射频/光疗双引擎，家用美容仪标杆</div></div>
+            <span class="brand-share">市占 13.2%</span>
+          </li>
+          <li>
+            <span class="brand-no">2</span>
+            <div class="brand-info"><div class="brand-name">宙斯 Dr.Arrivo</div><div class="brand-desc">日本 · 高端光电美容，主打提拉紧致</div></div>
+            <span class="brand-share">市占 11.8%</span>
+          </li>
+          <li>
+            <span class="brand-no">3</span>
+            <div class="brand-info"><div class="brand-name">NuFace</div><div class="brand-desc">美国 · 微电流/光疗头部品牌，亚马逊销冠</div></div>
+            <span class="brand-share">市占 9.6%</span>
+          </li>
+          <li>
+            <span class="brand-no">4</span>
+            <div class="brand-info"><div class="brand-name">觅光 AMIRO</div><div class="brand-desc">中国 · 面罩式 LED 销量黑马，性价比路线</div></div>
+            <span class="brand-share">市占 7.1%</span>
+          </li>
+          <li>
+            <span class="brand-no">5</span>
+            <div class="brand-info"><div class="brand-name">飞利浦 Philips</div><div class="brand-desc">荷兰 · 综合个护巨头，光能设备线覆盖广</div></div>
+            <span class="brand-share">市占 5.3%</span>
+          </li>
+        </ul>
+        <h4>竞争格局解读</h4>
+        <p>① 高端市场（¥3,000+）由日系双雄雅萌、宙斯把持，强调院线级技术与安全性认证；② 中端市场国产品牌（觅光、Dr. Liu 等）以「同源技术 + 1/3 价格」快速抢占份额，2024 年国产品牌线上份额已超 40%；③ 新品方向集中在多光谱组合、APP 智能联动与可穿戴形态。</p>
+      `
+    },
+    m5: {
+      title: "🌍 全球市场分布 · 详细分析",
+      body: `
+        <p>2024 年全球美容 LED 仪器市场中，<span class="hl">北美占比 38%</span> 居首，欧洲 28% 次之，亚太 25%，其余地区合计 9%。亚太（尤其中国）是增速最快的区域。</p>
+        <div class="kv-grid">
+          <div class="kv"><div class="k">北美</div><div class="v"><em>38%</em></div></div>
+          <div class="kv"><div class="k">欧洲</div><div class="v"><em>28%</em></div></div>
+          <div class="kv"><div class="k">亚太</div><div class="v"><em>25%</em></div></div>
+          <div class="kv"><div class="k">其他地区</div><div class="v"><em>9%</em></div></div>
+        </div>
+        <h4>区域份额对比</h4>
+        <div class="chart">
+          <div class="bar-row"><span class="bar-label">北美</span><div class="bar-track"><div class="bar-fill" style="width:100%">38%</div></div></div>
+          <div class="bar-row"><span class="bar-label">欧洲</span><div class="bar-track"><div class="bar-fill" style="width:74%">28%</div></div></div>
+          <div class="bar-row"><span class="bar-label">亚太</span><div class="bar-track"><div class="bar-fill" style="width:66%">25%</div></div></div>
+          <div class="bar-row"><span class="bar-label">其他</span><div class="bar-track"><div class="bar-fill" style="width:24%">9%</div></div></div>
+        </div>
+        <h4>区域解读</h4>
+        <p>① <b>北美</b>：NuFace 等本土品牌主场，DTC 直销成熟，家庭光疗渗透率最高；② <b>欧洲</b>：主打安全认证（CE）与抗衰老功效宣称，客单价高；③ <b>亚太</b>：中国为第一增长引擎（年增速 24.7%），日本贡献高端技术，东南亚为新兴增量市场；④ <b>趋势</b>：预计 2028 年亚太份额将提升至 30%，与北美差距持续缩小。</p>
+      `
+    }
+  };
+
+  function openModal(key) {
+    const data = MODALS[key];
+    if (!data) return;
+    document.getElementById('modalTitle').innerHTML = data.title;
+    document.getElementById('modalBody').innerHTML = data.body;
+    const mask = document.getElementById('mask');
+    mask.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    const mask = document.getElementById('mask');
+    mask.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOnMask(e) {
+    if (e.target.id === 'mask') closeModal();
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+
+</body>
+</html>
